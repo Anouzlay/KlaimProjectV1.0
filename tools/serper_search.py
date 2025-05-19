@@ -8,7 +8,7 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
+SERPER_API_URL = "https://google.serper.dev/search"
 
 def search_serper(query, max_results=10, max_retries=3 , serper_api):
     if not any(keyword in query.lower() for keyword in ['uae', 'dubai', 'abu dhabi', 'sharjah']):
