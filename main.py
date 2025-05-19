@@ -71,8 +71,16 @@ def main():
                                       type="password", key="serper_key_input")
             submit_keys = st.form_submit_button("Save API Keys")
             if submit_keys:
-                st.session_state.openai_key = openai_key
-                st.session_state.serper_key = serper_key
+                if openai_key:
+                    st.session_state.openai_key = openai_key
+                else:
+                    st.session_state.openai_key = st.secrets["OPENAI_API_KEY"]
+
+                if serper_key:
+                    st.session_state.serper_key = serper_key
+                else:
+                    st.session_state.serper_key = st.secrets["SERPER_API_KEY"]
+                    
                 st.success("API keys saved!")
 
     
