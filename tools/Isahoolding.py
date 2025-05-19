@@ -2,7 +2,6 @@ from openai import OpenAI
 
 import json
 
-OPENAI_API_KEY = "YOUR_API_KEY"  # Remember to replace this with your actual API key in production
 
 def search_hospital_parent_group(hospital_name: str, api_key: str):
     client = OpenAI(api_key=api_key)
@@ -132,7 +131,6 @@ def search_hospital_parent_group(hospital_name: str, api_key: str):
 # Example usage
 if __name__ == "__main__":
 
-    OPENAI_API_KEY = "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" 
     hospital_name = "Aldhaid hospital"
     result = search_hospital_parent_group(hospital_name, OPENAI_API_KEY)
     print(json.dumps(result, indent=2))
