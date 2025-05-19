@@ -128,9 +128,9 @@ def search_hospital_parent_group(hospital_name: str, api_key: str):
         print(f"Raw response: {search_response}")
         return {"error": "Invalid JSON response", "raw_response": search_response}
 
-# Example usage
-if __name__ == "__main__":
+# # Example usage
+# if __name__ == "__main__":
 
-    hospital_name = "Aldhaid hospital"
-    result = search_hospital_parent_group(hospital_name, OPENAI_API_KEY)
-    print(json.dumps(result, indent=2))
+#     hospital_name = "Aldhaid hospital"
+#     result = search_hospital_parent_group(hospital_name, OPENAI_API_KEY)
+#     print(json.dumps(result, indent=2))
