@@ -120,4 +120,4 @@ def search_for_hospital_ceo(hospital_name: str, api_key: str):
     json_response = json.loads(search_response)
     return json_response
 
-print(search_for_hospital_ceo("Public Health Centre -Al Dhaid" , OPENAI_API_KEY))
+#print(search_for_hospital_ceo("Public Health Centre -Al Dhaid" , OPENAI_API_KEY))
