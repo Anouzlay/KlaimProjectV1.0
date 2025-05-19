@@ -13,8 +13,9 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger(__name__)
 
 class HospitalDataExtractor:
-    def __init__(self, max_threads=10):
+    def __init__(self, max_threads=10 , serper_api):
         self.max_threads = max_threads
+        self.serper_api = serper_api
         self.collected_data = {
             'revenue': [],
             'specialties': [],
