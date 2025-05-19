@@ -1,7 +1,6 @@
 from openai import OpenAI
 import json
 
-OPENAI_API_KEY = "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"
 def search_for_hospital_ceo(hospital_name: str, api_key: str):
     client = OpenAI(api_key=api_key)
     
