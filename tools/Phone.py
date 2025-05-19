@@ -1,5 +1,4 @@
 from openai import OpenAI
-OPENAI_API_KEY = "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"
 def search_for_doctor_phone(doctor_name: str, hospital_name: str, api_key: str):
     client = OpenAI(api_key=api_key)
     search_query = '''
