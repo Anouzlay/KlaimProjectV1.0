@@ -8,7 +8,7 @@ from Processthreads import HospitalDataExtractor
 from Validater_agents import extract_hospital_data
 
 
-def process_single_hospital(hospital_name , openai_key):
+def process_single_hospital(hospital_name , openai_key , serper_api):
     with st.spinner(f"Researching {hospital_name}..."):
         extractor = HospitalDataExtractor(max_threads=10 , serper_api)
         optimize_data = extractor.run(hospital_name)
