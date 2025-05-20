@@ -10,7 +10,7 @@ from Validater_agents import extract_hospital_data
 
 def process_single_hospital(hospital_name , openai_key , serper_api):
     with st.spinner(f"Researching {hospital_name}..."):
-        extractor = HospitalDataExtractor(max_threads=10 , serper_api)
+        extractor = HospitalDataExtractor(serper_api ,max_threads=10)
         optimize_data = extractor.run(hospital_name)
         final_data = extract_hospital_data(optimize_data, openai_key , serper_api)
         return final_data
