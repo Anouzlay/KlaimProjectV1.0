@@ -261,4 +261,4 @@ def advanced_scrape_website(url: str, selector: str = None, wait_time: int = 0, 
     
 
 
-print(advanced_scrape_website("https://www.ehs.gov.ae/en/services/health-care-facilities"))
+# print(advanced_scrape_website("https://www.ehs.gov.ae/en/services/health-care-facilities"))
