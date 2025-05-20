@@ -6,11 +6,11 @@ import time
 import re
 import pdfplumber
 import io
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.chrome.service import Service
+# from selenium import webdriver
 import cloudscraper
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 from urllib.parse import urlparse
 from typing import Any
 
