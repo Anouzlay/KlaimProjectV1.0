@@ -41,8 +41,8 @@ class HospitalDataExtractor:
         try:
             search_results = hospital_info_search(
                 hospital_name, 
-                info_type,
                 self.serper_api ,
+                info_type,
                 max_results=5
             )
             
