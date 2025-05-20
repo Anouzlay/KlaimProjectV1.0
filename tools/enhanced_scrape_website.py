@@ -236,10 +236,10 @@ def advanced_scrape_website(url: str, selector: str = None, wait_time: int = 0, 
             if content:
                 st.write("Successfully scraped using CloudScraper")
 
-        if not content and javascript:
-            content = try_selenium_method()
-            if content:
-                st.write("Successfully scraped using Selenium")
+        # if not content and javascript:
+        #     content = try_selenium_method()
+        #     if content:
+        #         st.write("Successfully scraped using Selenium")
 
         if not content:
             return "Failed to scrape the website with all available methods."
