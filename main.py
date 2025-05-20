@@ -103,7 +103,7 @@ def main():
                         # CONTACT_PERSON_result=search_for_hospital_ceo(hcp_name , openai_key)
                         # ADDRESS_search_result= search_for_address(hcp_name  , openai_key)
 
-                        result = process_single_hospital(hcp_name , st.session_state.openai_key , serper_api)
+                        result = process_single_hospital(hcp_name , st.session_state.openai_key , st.session_state.serper_key)
                         st.subheader("Research Results")
                         st.markdown(type(result))
                         st.markdown(result)
