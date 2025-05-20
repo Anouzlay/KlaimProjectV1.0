@@ -200,7 +200,7 @@ def main():
         #         st.info("Enter a research topic and click 'Research This Topic' to begin.")
 
     if selected == "Analytics" :
-        st.write('Main Analytics ')
+        st.markdown('Main Analytics Features is Under Progress !')
 if __name__ == "__main__":
     main()
 
