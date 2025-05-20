@@ -12,7 +12,7 @@ def process_single_hospital(hospital_name , openai_key , serper_api):
     with st.spinner(f"Researching {hospital_name}..."):
         extractor = HospitalDataExtractor(max_threads=10 , serper_api)
         optimize_data = extractor.run(hospital_name)
-        final_data = extract_hospital_data(optimize_data, openai_key)
+        final_data = extract_hospital_data(optimize_data, openai_key , serper_api)
         return final_data
 
 # Function to process multiple hospitals from CSV
@@ -26,7 +26,7 @@ def process_hospital_batch(hospital_list , openai_key):
     for i, hospital in enumerate(hospital_list):
         status_text.text(f"Processing hospital {i+1}/{total_hospitals}: {hospital}")
         try:
-            result = process_single_hospital(hospital, openai_key)
+            result = process_single_hospital(hospital, openai_key , serper_api)
             results.append(result)
         except Exception as e:
             results.append({
