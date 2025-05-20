@@ -16,7 +16,7 @@ def process_single_hospital(hospital_name , openai_key , serper_api):
         return final_data
 
 # Function to process multiple hospitals from CSV
-def process_hospital_batch(hospital_list , openai_key):
+def process_hospital_batch(hospital_list , openai_key , serper_api):
     results = []
     progress_bar = st.progress(0)
     status_text = st.empty()
