@@ -15,9 +15,9 @@ def search_serper(query , serper_api ,  max_results=10 , max_retries=3):
         query = f"{query} UAE hospital"
         
     logger.info(f"Searching with Serper: {query}")
-    if not SERPER_API_KEY:
-        logger.error("Serper API key is not set. Set the SERPER_API_KEY environment variable.")
-        return {"error": "Serper API key is not set. Set the SERPER_API_KEY environment variable."}
+    if not serper_api:
+        logger.error("Serper API key is not set. Set the serper_api environment variable.")
+        return {"error": "Serper API key is not set. Set the serper_api environment variable."}
     
     headers = {
         "X-API-KEY": serper_api,
