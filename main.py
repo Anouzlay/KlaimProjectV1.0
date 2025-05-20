@@ -26,7 +26,22 @@ from ProcessResult import process_single_hospital , process_hospital_batch
 
 def main():
     st.set_page_config(page_title="Klaim Project", layout="wide")
-    logo = Image.open(r'C:\Users\yanou\OneDrive\Bureau\KlaimFinalproject-main\KlaimFinalproject-main\Company_image\2023-04-03.png')
+    image_paths = [
+        # Try relative paths
+        "Company_image/2023-04-03.png",
+        "2023-04-03.png",
+        # Try absolute path for the deployed environment
+        "/mount/src/klaimprojectv1.0/Company_image/2023-04-03.png",
+    ]
+    
+    logo = None
+    for path in image_paths:
+        try:
+            logo = Image.open(path)
+            print(f"Successfully loaded image from: {path}")
+            break
+        except FileNotFoundError:
+            continue
     st.image(logo, width=300, output_format="PNG")
 
     # Set up a column for the menu
