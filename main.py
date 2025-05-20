@@ -1,4 +1,7 @@
 import sys
+__import__('pysqlite3')
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import streamlit as st
 from streamlit_option_menu import option_menu
 from PIL import Image
@@ -20,9 +23,6 @@ from Processthreads import HospitalDataExtractor
 #Agents
 from main_agent_reporter import run_agent
 from ProcessResult import process_single_hospital , process_hospital_batch
-
-__import__('pysqlite3')
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
 def main():
     st.set_page_config(page_title="Klaim Project", layout="wide")
