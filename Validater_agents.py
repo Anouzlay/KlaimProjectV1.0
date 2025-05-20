@@ -11,27 +11,66 @@ def count_tokens(text: str, model: str = "gpt-4") -> int:
     except Exception as e:
         return len(text.split()) * 1.5  
 
-def chunk_sources(sources: List[Dict[str, str]], max_tokens: int = 100000) -> List[List[Dict[str, str]]]:
+def chunk_sources(sources, max_tokens=100000):
+    """
+    Split sources into chunks based on token count
+    
+    Args:
+        sources (list): List of source dictionaries with 'url' and 'text' keys
+        max_tokens (int): Maximum number of tokens per chunk
+        
+    Returns:
+        list: List of chunks, where each chunk is a list of source dictionaries
+    """
+    # Ensure max_tokens is an integer
+    if not isinstance(max_tokens, int):
+        try:
+            max_tokens = int(max_tokens)
+        except (ValueError, TypeError):
+            print(f"Warning: Invalid max_tokens value '{max_tokens}', using default 100000")
+            max_tokens = 100000
+    
     chunks = []
     current_chunk = []
     current_tokens = 0
     
     for source in sources:
+        # Skip invalid sources
+        if not isinstance(source, dict) or 'url' not in source or 'text' not in source:
+            print(f"Warning: Skipping invalid source: {source}")
+            continue
+        
         source_text = f"SOURCE URL: {source['url']}\n{source['text']}"
         source_tokens = count_tokens(source_text)
-
+        
+        # Ensure source_tokens is an integer
+        if not isinstance(source_tokens, int):
+            try:
+                source_tokens = int(source_tokens)
+            except (ValueError, TypeError):
+                print(f"Warning: Invalid token count '{source_tokens}', using estimate")
+                source_tokens = len(source_text.split()) * 2  # Rough estimate
+        
         if current_tokens + source_tokens > max_tokens and current_chunk:
             chunks.append(current_chunk)
             current_chunk = []
             current_tokens = 0
 
         if source_tokens > max_tokens:
+            # Handle large sources by splitting into paragraphs
             paragraphs = source['text'].split('\n\n')
             temp_source = {'url': source['url'], 'text': ''}
             
             for paragraph in paragraphs:
                 paragraph_tokens = count_tokens(paragraph)
-            
+                
+                # Ensure paragraph_tokens is an integer
+                if not isinstance(paragraph_tokens, int):
+                    try:
+                        paragraph_tokens = int(paragraph_tokens)
+                    except (ValueError, TypeError):
+                        paragraph_tokens = len(paragraph.split()) * 2  # Rough estimate
+                
                 if current_tokens + paragraph_tokens > max_tokens and temp_source['text']:
                     current_chunk.append(temp_source)
                     chunks.append(current_chunk)
@@ -41,17 +80,28 @@ def chunk_sources(sources: List[Dict[str, str]], max_tokens: int = 100000) -> Li
                 
                 temp_source['text'] += paragraph + '\n\n'
                 current_tokens += paragraph_tokens
+            
             if temp_source['text']:
                 current_chunk.append(temp_source)
-                current_tokens += count_tokens(f"SOURCE URL: {temp_source['url']}\n{temp_source['text']}")
+                temp_text_tokens = count_tokens(f"SOURCE URL: {temp_source['url']}\n{temp_source['text']}")
+                
+                # Ensure temp_text_tokens is an integer
+                if not isinstance(temp_text_tokens, int):
+                    try:
+                        temp_text_tokens = int(temp_text_tokens)
+                    except (ValueError, TypeError):
+                        temp_text_tokens = len(temp_source['text'].split()) * 2  # Rough estimate
+                
+                current_tokens += temp_text_tokens
         else:
-
             current_chunk.append(source)
             current_tokens += source_tokens
+    
     if current_chunk:
         chunks.append(current_chunk)
     
     return chunks
+    
 def create_chunked_task(agent, task_type, sources_chunk, chunk_index, total_chunks):
     """Generic function to create a task with chunked data."""
     sources_text = "\n\n".join([f"SOURCE {i+1} URL: {source['url']}\n{source['text']}" 
@@ -340,6 +390,26 @@ def create_aggregation_task(agent, task_type, all_chunk_results):
     )
 
 def process_field_with_chunking(agent, field_type, field_data, max_tokens=100000):
+    """
+    Process a field by chunking the data and running the agent
+    
+    Args:
+        agent: The agent to process the field
+        field_type (str): Type of field to process
+        field_data (list): List of field data
+        max_tokens (int): Maximum number of tokens per chunk
+        
+    Returns:
+        str: JSON string with processed results
+    """
+    # Ensure max_tokens is an integer
+    if not isinstance(max_tokens, int):
+        try:
+            max_tokens = int(max_tokens)
+        except (ValueError, TypeError):
+            print(f"Warning: Invalid max_tokens value '{max_tokens}', using default 100000")
+            max_tokens = 100000
+    
     if not field_data:
         return json.dumps({
             "most_common": {
@@ -349,9 +419,11 @@ def process_field_with_chunking(agent, field_type, field_data, max_tokens=100000
             },
             "all_values": []
         })
+    
     chunks = chunk_sources(field_data, max_tokens)
     print(f"Split {field_type} data into {len(chunks)} chunks")
     all_chunk_results = []
+    
     for i, chunk in enumerate(chunks):
         task = create_chunked_task(agent, field_type, chunk, i, len(chunks))
         crew = Crew(agents=[agent], tasks=[task], verbose=True, process="sequential")
@@ -421,12 +493,30 @@ def process_field_with_chunking(agent, field_type, field_data, max_tokens=100000
             },
             "all_values": []
         })
-
 def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000):
+    """
+    Extract hospital data from raw data
+    
+    Args:
+        raw_data_with_urls (dict): Raw data with URLs
+        openai_api_key (str): OpenAI API key
+        max_tokens (int): Maximum number of tokens per chunk
+        
+    Returns:
+        dict: Extracted hospital data
+    """
+    # Ensure max_tokens is an integer
+    if not isinstance(max_tokens, int):
+        try:
+            max_tokens = int(max_tokens)
+        except (ValueError, TypeError):
+            print(f"Warning: Invalid max_tokens value '{max_tokens}', using default 100000")
+            max_tokens = 100000
+    
     litellm.api_key = openai_api_key
     normalized_data = {}
     
-
+    # Define all agents
     revenue_agent = Agent(
         role="Revenue Data Extractor",
         goal="Extract all yearly net revenue figures from multiple sources and identify the most common value",
@@ -496,6 +586,8 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
         backstory="Data integration specialist who excels at reconciling information from multiple sources",
         verbose=True
     )
+    
+    # Normalize raw data
     for field in ['revenue', 'specialties', 'doctors', 'ceo', 'website', 
                  'management', 'insurance', 'phone', 'location']:
         
@@ -527,6 +619,8 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
     print("Normalized data structure:")
     for field, sources in normalized_data.items():
         print(f"{field}: {len(sources)} sources")
+    
+    # Process each field
     print("Processing revenue data...")
     revenue_result = process_field_with_chunking(revenue_agent, "revenue", normalized_data['revenue'], max_tokens)
     
@@ -553,6 +647,8 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
     
     print("Processing location data...")
     location_result = process_field_with_chunking(location_agent, "location", normalized_data['location'], max_tokens)
+    
+    # Ensure JSON strings
     def ensure_json_str(result):
         if isinstance(result, str):
             try:
@@ -580,6 +676,7 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
                 },
                 "all_values": []
             })
+    
     agent_results = {
         'revenue': ensure_json_str(revenue_result),
         'specialties': ensure_json_str(specialties_result),
@@ -591,10 +688,12 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
         'phone': ensure_json_str(phone_result),
         'location': ensure_json_str(location_result)
     }
+    
     print("\nData being sent to coordinator:")
     for field, data in agent_results.items():
         print(f"{field}: {data[:100]}..." if len(data) > 100 else f"{field}: {data}")
 
+    # Create coordinator task
     coordinator_task = Task(
         description=f"""
         Integrate these extracted data points with multiple sources into a single, structured format:
@@ -687,7 +786,6 @@ def extract_hospital_data(raw_data_with_urls, openai_api_key, max_tokens=100000)
             "raw_results": agent_results,
             "error": str(e)
         }
-
 def manually_aggregate_results(chunk_results):
 
     value_counts = {}
