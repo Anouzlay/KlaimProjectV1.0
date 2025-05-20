@@ -42,8 +42,8 @@ class HospitalDataExtractor:
             search_results = hospital_info_search(
                 hospital_name, 
                 info_type,
-                max_results=5,
-                serper_api
+                serper_api ,
+                 max_results=5
             )
             
             # Map info_type to category
