@@ -20,7 +20,7 @@ def search_serper(query , serper_api ,  max_results=10 , max_retries=3):
         return {"error": "Serper API key is not set. Set the SERPER_API_KEY environment variable."}
     
     headers = {
-        "X-API-KEY": SERPER_API_KEY,
+        "X-API-KEY": serper_api,
         "Content-Type": "application/json", 
     }
     
