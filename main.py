@@ -120,7 +120,6 @@ def main():
 
                         result = process_single_hospital(hcp_name , st.session_state.openai_key , st.session_state.serper_key)
                         st.subheader("Research Results")
-                        st.markdown(type(result))
                         st.markdown(result)
                     else:
                         st.warning("Please enter a hospital or clinic name.")
