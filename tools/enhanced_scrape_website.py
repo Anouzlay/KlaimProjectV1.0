@@ -161,53 +161,53 @@ def advanced_scrape_website(url: str, selector: str = None, wait_time: int = 0, 
             logger.info(f"CloudScraper method failed: {str(e)}")
             return None
     
-    def try_selenium_method():
-        if not javascript:
-            return None
+    # def try_selenium_method():
+    #     if not javascript:
+    #         return None
             
-        try:
-            options = Options()
-            options.add_argument("--headless")
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
-            options.add_argument(f"user-agent={user_agents[0]}")
+    #     try:
+    #         options = Options()
+    #         options.add_argument("--headless")
+    #         options.add_argument("--no-sandbox")
+    #         options.add_argument("--disable-dev-shm-usage")
+    #         options.add_argument(f"user-agent={user_agents[0]}")
             
-            # Add PDF handling with Selenium
-            if is_pdf_url(url):
-                st.write("PDF URL detected, using requests method instead of Selenium")
-                try:
-                    response = requests.get(url, headers=headers, timeout=15)
-                    response.raise_for_status()
-                    return extract_pdf_content(response.content)
-                except Exception as e:
-                    logger.error(f"Error downloading PDF with requests: {str(e)}")
-                    return None
+    #         # Add PDF handling with Selenium
+    #         if is_pdf_url(url):
+    #             st.write("PDF URL detected, using requests method instead of Selenium")
+    #             try:
+    #                 response = requests.get(url, headers=headers, timeout=15)
+    #                 response.raise_for_status()
+    #                 return extract_pdf_content(response.content)
+    #             except Exception as e:
+    #                 logger.error(f"Error downloading PDF with requests: {str(e)}")
+    #                 return None
             
-            driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-            driver.get(url)
+    #         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    #         driver.get(url)
             
-            if wait_time > 0:
-                time.sleep(wait_time)
+    #         if wait_time > 0:
+    #             time.sleep(wait_time)
             
-            # Check if the page redirected to a PDF
-            current_url = driver.current_url
-            if is_pdf_url(current_url):
-                st.write("Redirected to PDF, downloading and extracting...")
-                driver.quit()
-                response = requests.get(current_url, headers=headers, timeout=15)
-                response.raise_for_status()
-                return extract_pdf_content(response.content)
+    #         # Check if the page redirected to a PDF
+    #         current_url = driver.current_url
+    #         if is_pdf_url(current_url):
+    #             st.write("Redirected to PDF, downloading and extracting...")
+    #             driver.quit()
+    #             response = requests.get(current_url, headers=headers, timeout=15)
+    #             response.raise_for_status()
+    #             return extract_pdf_content(response.content)
             
-            page_source = driver.page_source
-            driver.quit()
+    #         page_source = driver.page_source
+    #         driver.quit()
             
-            return extract_with_beautifulsoup(page_source, selector)
-        except ImportError:
-            logger.warning("Selenium not installed, skipping this method")
-            return None
-        except Exception as e:
-            logger.info(f"Selenium method failed: {str(e)}")
-            return None
+    #         return extract_with_beautifulsoup(page_source, selector)
+    #     except ImportError:
+    #         logger.warning("Selenium not installed, skipping this method")
+    #         return None
+    #     except Exception as e:
+    #         logger.info(f"Selenium method failed: {str(e)}")
+    #         return None
     
     try:
         # Special case for PDF URLs
