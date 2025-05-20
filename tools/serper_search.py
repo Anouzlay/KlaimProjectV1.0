@@ -107,7 +107,7 @@ def fallback_search(query, max_results=10):
     logger.info("Using fallback search mechanism")
     return [f"Unable to search for '{query}' due to API limits or errors. Please try manually searching for {query} in UAE."]
 
-def hospital_info_search(hospital_name, info="GENERAL", max_results=10, max_retries=3):
+def hospital_info_search(hospital_name,serper_api, info="GENERAL", max_results=10, max_retries=3):
 
     query = f"{hospital_name} UAE hospital"
     
@@ -148,4 +148,4 @@ def hospital_info_search(hospital_name, info="GENERAL", max_results=10, max_retr
     else:
         logger.info(f"Performing general search for {hospital_name}")
     
-    return search_serper(query, max_results, max_retries)
+    return search_serper(query, serper_api,max_results, max_retries)
